@@ -1,0 +1,105 @@
+{
+  "best_model": "XGBoost",
+  "feature_cols": [
+    "age",
+    "income",
+    "employment_length",
+    "debt",
+    "credit_history_length",
+    "num_credit_cards",
+    "num_loans",
+    "monthly_emi",
+    "existing_defaults",
+    "payment_history",
+    "housing",
+    "purpose",
+    "job_type"
+  ],
+  "numeric_cols": [
+    "age",
+    "income",
+    "employment_length",
+    "debt",
+    "credit_history_length",
+    "num_credit_cards",
+    "num_loans",
+    "monthly_emi",
+    "existing_defaults"
+  ],
+  "cat_cols": [
+    "payment_history",
+    "housing",
+    "purpose",
+    "job_type"
+  ],
+  "results": {
+    "Logistic Regression": {
+      "accuracy": 0.8267,
+      "precision": 0.7568,
+      "recall": 0.6222,
+      "f1_score": 0.6829,
+      "roc_auc": 0.8793,
+      "confusion_matrix": [
+        [
+          192,
+          18
+        ],
+        [
+          34,
+          56
+        ]
+      ]
+    },
+    "Decision Tree": {
+      "accuracy": 0.8167,
+      "precision": 0.7108,
+      "recall": 0.6556,
+      "f1_score": 0.6821,
+      "roc_auc": 0.8224,
+      "confusion_matrix": [
+        [
+          186,
+          24
+        ],
+        [
+          31,
+          59
+        ]
+      ]
+    },
+    "Random Forest": {
+      "accuracy": 0.8467,
+      "precision": 0.8667,
+      "recall": 0.5778,
+      "f1_score": 0.6933,
+      "roc_auc": 0.9323,
+      "confusion_matrix": [
+        [
+          202,
+          8
+        ],
+        [
+          38,
+          52
+        ]
+      ]
+    },
+    "XGBoost": {
+      "accuracy": 0.8933,
+      "precision": 0.8625,
+      "recall": 0.7667,
+      "f1_score": 0.8118,
+      "roc_auc": 0.9585,
+      "confusion_matrix": [
+        [
+          199,
+          11
+        ],
+        [
+          21,
+          69
+        ]
+      ]
+    }
+  }
+}
