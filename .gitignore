@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+venv/
+env/
+.venv/
+
+# Flask
+instance/
+.flaskenv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Model artifacts (optional: comment out these lines if you want to commit the trained model)
+# model/*.pkl
+# model/metadata.json
+
+# Logs
+*.log
+flask.log
