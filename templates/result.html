@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediction Result | Credit Scoring Model</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-theme="light">
+
+  <div class="page-wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-icon">₹</div>
+        <span>Credit Scoring Model</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+    </div>
+
+    <div class="glass-card result-hero">
+      <div class="result-badge {{ 'low-risk' if result.prediction == 0 else 'high-risk' }}">
+        {{ result.label }}
+      </div>
+      <p class="result-meta">
+        {% if result.eligible_for_loan %}
+          ✅ Eligible for Loan
+        {% else %}
+          ⚠️ Loan Risk Detected
+        {% endif %}
+      </p>
+
+      <div class="confidence-ring-wrap">
+        <canvas id="confidenceRing" width="200" height="200"></canvas>
+      </div>
+      <p class="result-meta">Model Confidence: <strong>{{ result.confidence }}%</strong></p>
+
+      <div class="result-detail-grid">
+        <div class="detail-chip">
+          <div class="label">Low Risk Probability</div>
+          <div class="value">{{ result.low_risk_probability }}%</div>
+        </div>
+        <div class="detail-chip">
+          <div class="label">High Risk Probability</div>
+          <div class="value">{{ result.high_risk_probability }}%</div>
+        </div>
+        <div class="detail-chip">
+          <div class="label">Age</div>
+          <div class="value">{{ input_data.age|int }}</div>
+        </div>
+        <div class="detail-chip">
+          <div class="label">Income</div>
+          <div class="value">₹{{ "{:,.0f}".format(input_data.income) }}</div>
+        </div>
+        <div class="detail-chip">
+          <div class="label">Monthly EMI</div>
+          <div class="value">₹{{ "{:,.0f}".format(input_data.monthly_emi) }}</div>
+        </div>
+        <div class="detail-chip">
+          <div class="label">Existing Defaults</div>
+          <div class="value">{{ input_data.existing_defaults|int }}</div>
+        </div>
+      </div>
+
+      <div class="btn-row" style="justify-content:center; margin-top:26px;">
+        <a href="/" class="btn btn-secondary">Try Another Applicant</a>
+      </div>
+    </div>
+
+    <footer>Credit Scoring Model &middot; Built with Flask &amp; Scikit-learn</footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <script>
+    window.RESULT_CONFIDENCE = {{ result.confidence }};
+    window.RESULT_IS_HIGH_RISK = {{ 'true' if result.prediction == 1 else 'false' }};
+  </script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

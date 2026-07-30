@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Scoring Model</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-theme="light">
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="page-wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-icon">₹</div>
+        <span>Credit Scoring Model</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+    </div>
+
+    <div class="glass-card">
+      <h2>Loan Applicant Details</h2>
+      <p class="subtitle">Fill in the applicant's financial information to predict credit risk.</p>
+
+      {% if errors %}
+      <div class="error-box">
+        <strong>Please fix the following:</strong>
+        <ul>
+          {% for err in errors %}
+          <li>{{ err }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <form id="creditForm" action="/predict" method="POST" novalidate>
+        <div class="form-grid">
+
+          <div class="field">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" min="18" max="100" required
+                   value="{{ form_data.age if form_data else '' }}">
+            <span class="error-msg" data-for="age"></span>
+          </div>
+
+          <div class="field">
+            <label for="income">Annual Income (₹)</label>
+            <input type="number" id="income" name="income" min="0" step="1000" required
+                   value="{{ form_data.income if form_data else '' }}">
+            <span class="error-msg" data-for="income"></span>
+          </div>
+
+          <div class="field">
+            <label for="employment_length">Employment Length (years)</label>
+            <input type="number" id="employment_length" name="employment_length" min="0" max="60" required
+                   value="{{ form_data.employment_length if form_data else '' }}">
+            <span class="error-msg" data-for="employment_length"></span>
+          </div>
+
+          <div class="field">
+            <label for="debt">Total Debt (₹)</label>
+            <input type="number" id="debt" name="debt" min="0" step="500" required
+                   value="{{ form_data.debt if form_data else '' }}">
+            <span class="error-msg" data-for="debt"></span>
+          </div>
+
+          <div class="field">
+            <label for="credit_history_length">Credit History Length (years)</label>
+            <input type="number" id="credit_history_length" name="credit_history_length" min="0" max="60" required
+                   value="{{ form_data.credit_history_length if form_data else '' }}">
+            <span class="error-msg" data-for="credit_history_length"></span>
+          </div>
+
+          <div class="field">
+            <label for="num_credit_cards">Number of Credit Cards</label>
+            <input type="number" id="num_credit_cards" name="num_credit_cards" min="0" max="50" required
+                   value="{{ form_data.num_credit_cards if form_data else '' }}">
+            <span class="error-msg" data-for="num_credit_cards"></span>
+          </div>
+
+          <div class="field">
+            <label for="num_loans">Number of Existing Loans</label>
+            <input type="number" id="num_loans" name="num_loans" min="0" max="50" required
+                   value="{{ form_data.num_loans if form_data else '' }}">
+            <span class="error-msg" data-for="num_loans"></span>
+          </div>
+
+          <div class="field">
+            <label for="monthly_emi">Monthly EMI (₹)</label>
+            <input type="number" id="monthly_emi" name="monthly_emi" min="0" step="100" required
+                   value="{{ form_data.monthly_emi if form_data else '' }}">
+            <span class="error-msg" data-for="monthly_emi"></span>
+          </div>
+
+          <div class="field">
+            <label for="existing_defaults">Existing Defaults</label>
+            <input type="number" id="existing_defaults" name="existing_defaults" min="0" max="20" required
+                   value="{{ form_data.existing_defaults if form_data else '' }}">
+            <span class="error-msg" data-for="existing_defaults"></span>
+          </div>
+
+          <div class="field">
+            <label for="payment_history">Payment History</label>
+            <select id="payment_history" name="payment_history" required>
+              <option value="">Select...</option>
+              {% for opt in payment_history_options %}
+              <option value="{{ opt }}" {% if form_data and form_data.payment_history==opt %}selected{% endif %}>
+                {{ opt|capitalize }}
+              </option>
+              {% endfor %}
+            </select>
+            <span class="error-msg" data-for="payment_history"></span>
+          </div>
+
+          <div class="field">
+            <label for="housing">Housing Status</label>
+            <select id="housing" name="housing" required>
+              <option value="">Select...</option>
+              {% for opt in housing_options %}
+              <option value="{{ opt }}" {% if form_data and form_data.housing==opt %}selected{% endif %}>
+                {{ opt|replace('_',' ')|capitalize }}
+              </option>
+              {% endfor %}
+            </select>
+            <span class="error-msg" data-for="housing"></span>
+          </div>
+
+          <div class="field">
+            <label for="purpose">Loan Purpose</label>
+            <select id="purpose" name="purpose" required>
+              <option value="">Select...</option>
+              {% for opt in purpose_options %}
+              <option value="{{ opt }}" {% if form_data and form_data.purpose==opt %}selected{% endif %}>
+                {{ opt|replace('_',' ')|capitalize }}
+              </option>
+              {% endfor %}
+            </select>
+            <span class="error-msg" data-for="purpose"></span>
+          </div>
+
+          <div class="field">
+            <label for="job_type">Job Type</label>
+            <select id="job_type" name="job_type" required>
+              <option value="">Select...</option>
+              {% for opt in job_type_options %}
+              <option value="{{ opt }}" {% if form_data and form_data.job_type==opt %}selected{% endif %}>
+                {{ opt|replace('_',' ')|capitalize }}
+              </option>
+              {% endfor %}
+            </select>
+            <span class="error-msg" data-for="job_type"></span>
+          </div>
+
+        </div>
+
+        <div class="btn-row">
+          <button type="reset" class="btn btn-secondary">Reset</button>
+          <button type="submit" class="btn" id="submitBtn">Predict Credit Score</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="glass-card" id="metricsCard">
+      <h2>Model Performance Dashboard</h2>
+      <p class="subtitle">Comparison of trained models on the held-out test set.</p>
+      <div id="metricsSummary" class="metrics-grid"></div>
+      <canvas id="metricsChart" height="110"></canvas>
+    </div>
+
+    <footer>Credit Scoring Model &middot; Built with Flask &amp; Scikit-learn</footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
